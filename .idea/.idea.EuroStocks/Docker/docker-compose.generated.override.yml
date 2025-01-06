@@ -1,0 +1,35 @@
+# This is a generated file. Not intended for manual editing.
+services:
+  eurostocks:
+    build:
+      context: "/Users/track-pod/Documents/ed/EuroStocks"
+      dockerfile: "EuroStocks/Dockerfile"
+      target: "base"
+      args:
+        BUILD_CONFIGURATION: "Debug"
+    command: []
+    entrypoint:
+    - "/opt/rider-debugger/linux-arm64/JetBrains.Debugger.Worker"
+    - "--runtimeconfig"
+    - "/opt/rider-debugger/JetBrains.Debugger.Worker.runtimeconfig.json"
+    - "--mode=server"
+    - "--frontend-port=57100"
+    - "--backend-port=57300"
+    - "--timeout=60"
+    environment:
+      ASPNETCORE_ENVIRONMENT: "Development"
+      DOTNET_USE_POLLING_FILE_WATCHER: "true"
+      RIDER_DEBUGGER_LOG_DIR: "/var/opt/rider-debugger"
+      RESHARPER_LOG_CONF: "/etc/opt/rider-debugger/backend-log.xml"
+    image: "eurostocks:dev"
+    ports:
+    - "127.0.0.1:57012:57100"
+    - "127.0.0.1:57212:57300"
+    volumes:
+    - "/Users/track-pod/.nuget/packages:/home/app/.nuget/packages"
+    - "/Users/track-pod/Documents/ed/EuroStocks/EuroStocks:/app:rw"
+    - "/Users/track-pod/Documents/ed/EuroStocks:/src:rw"
+    - "/Users/track-pod/.local/share/JetBrains/RiderRemoteDebugger/2024.1.1/LinuxArm64:/opt/rider-debugger"
+    - "/Applications/Rider.app/Contents/bin:/etc/opt/rider-debugger/backend-log.xml"
+    - "/Users/track-pod/Library/Logs/JetBrains/Rider2024.1/DebuggerWorker/JetBrains.Debugger.Worker.2025_1_06_15_36_11:/var/opt/rider-debugger:rw"
+    working_dir: "/app"

@@ -1,0 +1,23 @@
+﻿services:
+  eurostocks:
+    build:
+      context: .
+      dockerfile: EuroStocks/Dockerfile
+    ports:
+      - 5000:8080
+      
+  localstack:
+    image: localstack/localstack
+    ports:
+      - "127.0.0.1:4566:4566"            # LocalStack Gateway
+      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+      - "8055:8080"
+    environment:
+      - DEBUG=1
+      - SERVICES=s3,web                  # Включение S3 и Web UI
+      - AWS_ACCESS_KEY_ID=test           # Фиктивный Access Key
+      - AWS_SECRET_ACCESS_KEY=test       # Фиктивный Secret Key
+      - EDGE_PORT=4566
+    volumes:
+      - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
+      - "/var/run/docker.sock:/var/run/docker.sock"
