@@ -21,3 +21,14 @@
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
       - "/var/run/docker.sock:/var/run/docker.sock"
+        
+  postgres:
+    image: postgres
+    ports:
+      - 5432:5432
+    volumes:
+      - ~/apps/postgres:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_PASSWORD=eurostocks
+      - POSTGRES_USER=eurostocks
+      - POSTGRES_DB=eurostocks

@@ -1,10 +1,12 @@
 using Amazon.S3;
 using EuroStocks;
-using EuroStocks.Domain.Services;
-using EuroStocks.Domain.Services.Abstract;
+using EuroStocks.Infrastructure;
 using Microsoft.AspNetCore.Builder;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using IStorageService = EuroStock.Domain.Services.Abstract.IStorageService;
+using S3StorageService = EuroStock.Domain.Services.S3StorageService;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,6 +32,11 @@ builder.Services.AddSingleton<IAmazonS3>(sp =>
 });
 
 builder.Services.AddScoped<IStorageService, S3StorageService>();
+
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+{
+    options.UseNpgsql(builder.Configuration.GetConnectionString("PostgresConnection"));
+});
 
 builder.Services.AddCors(c =>
 {

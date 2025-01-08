@@ -1,9 +1,4 @@
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
-
-namespace EuroStocks.Domain.Services.Abstract;
+namespace EuroStock.Domain.Services.Abstract;
 
 public interface IStorageService
 {

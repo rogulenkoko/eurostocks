@@ -1,12 +1,9 @@
-using System;
-using System.IO;
-using System.Threading;
-using System.Threading.Tasks;
 using Amazon.S3;
 using Amazon.S3.Model;
-using EuroStocks.Domain.Services.Abstract;
+using EuroStock.Domain.Services.Abstract;
+using Polly;
 
-namespace EuroStocks.Domain.Services;
+namespace EuroStock.Domain.Services;
 
 public class S3StorageService(IAmazonS3 s3Client) : IStorageService
 {
@@ -25,7 +22,9 @@ public class S3StorageService(IAmazonS3 s3Client) : IStorageService
             InputStream = fileStream,
             ContentType = "image/jpeg"
         };
-        await s3Client.PutObjectAsync(putRequest, cancellationToken);
+        
+        var policy = Policy.Handle<Exception>().WaitAndRetryAsync(3, i => TimeSpan.FromMilliseconds(300));
+        await policy.ExecuteAsync(() => s3Client.PutObjectAsync(putRequest, cancellationToken));
         return id;
     }
 
@@ -53,19 +52,6 @@ public class S3StorageService(IAmazonS3 s3Client) : IStorageService
             BucketRegionName = s3Client.Config.AuthenticationRegion,
         });
     }
-    
-    // public async Task<Guid> PutPhoto(byte[] data, string container, CancellationToken cancellationToken = default)
-    // {
-    //     var id = Guid.NewGuid();
-    //     var name = GetPath(container, id);
-    //
-    //     var response = await s3Client.ListBucketsAsync(cancellationToken);
-    //     
-    //     var policy = Policy.Handle<Exception>().WaitAndRetryAsync(3, i => TimeSpan.FromMilliseconds(300));
-    //     await policy.ExecuteAsync(() => _transferUtility.UploadAsync(new MemoryStream(data), BucketName, name, cancellationToken));
-    //
-    //     return id;
-    // }
 
     private static string GetPath(string container, Guid imageId)
     {

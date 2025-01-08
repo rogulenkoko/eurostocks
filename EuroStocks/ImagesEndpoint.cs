@@ -1,5 +1,5 @@
 using System;
-using EuroStocks.Domain.Services.Abstract;
+using EuroStock.Domain.Services.Abstract;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
