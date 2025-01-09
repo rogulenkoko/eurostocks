@@ -26,14 +26,14 @@
   localstack:
     image: localstack/localstack
     ports:
-      - "127.0.0.1:4566:4566"            # LocalStack Gateway
-      - "127.0.0.1:4510-4559:4510-4559"  # external services port range
+      - "127.0.0.1:4566:4566"            
+      - "127.0.0.1:4510-4559:4510-4559"  
       - "8055:8080"
     environment:
       - DEBUG=1
-      - SERVICES=s3,web                  # Включение S3 и Web UI
-      - AWS_ACCESS_KEY_ID=test           # Фиктивный Access Key
-      - AWS_SECRET_ACCESS_KEY=test       # Фиктивный Secret Key
+      - SERVICES=s3,web                  
+      - AWS_ACCESS_KEY_ID=test           
+      - AWS_SECRET_ACCESS_KEY=test       
       - EDGE_PORT=4566
     volumes:
       - "${LOCALSTACK_VOLUME_DIR:-./volume}:/var/lib/localstack"
