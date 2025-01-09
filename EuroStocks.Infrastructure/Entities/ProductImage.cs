@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations.Schema;
 namespace EuroStocks.Infrastructure.Entities;
 
 [Table("product_image")]
-public class ProductImage
+public class ProductImage : Entity
 {
     [Key]
     [Column("id")]
@@ -13,25 +13,22 @@ public class ProductImage
     [Column("product_id")]
     public Guid ProductId { get; set; }
     
-    public virtual Product Product { get; set; }
+    public virtual Product? Product { get; set; }
     
     [Column("file_name")]
     [MaxLength(255)]
-    public string FileName { get; set; }
+    public string? FileName { get; set; }
     
     [Column("ext")]
     [MaxLength(255)]
-    public string Extension { get; set; }
+    public string? Extension { get; set; }
     
-    [Column("data")]
-    public byte[] Data { get; set; }
+    [Column("source_url")]
+    public string? SourceUrl { get; set; }
     
-    [Column("sequence")]
-    public int? Sequence { get; set; }
+    [Column("sequence_number")]
+    public int? SequenceNumber { get; set; }
     
     [Column("is_deleted")]
     public bool IsDeleted { get; set; }
-    
-    [Column("user_id")]
-    public Guid UserId { get; set; }
 }

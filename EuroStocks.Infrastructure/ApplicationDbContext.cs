@@ -3,9 +3,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace EuroStocks.Infrastructure;
 
-public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : DbContext(options), IApplicationDbContext
 {
-    public DbSet<ProductImage> Blogs { get; set; }
+    public DbSet<ProductImage> ProductImages { get; set; }
     
-    public DbSet<Product> Posts { get; set; }
+    public DbSet<Product> Products { get; set; }
+    
+    public Task SaveChangesAsync()
+    {
+        return base.SaveChangesAsync();
+    }
 }

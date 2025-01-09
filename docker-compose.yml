@@ -5,6 +5,21 @@
       dockerfile: EuroStocks/Dockerfile
     ports:
       - 5000:8080
+    depends_on:
+      - localstack
+      - postgres
+      - rabbitmq
+  
+  eurostocks-consumers:
+    build:
+      context: .
+      dockerfile: EuroStocks.Consumers/Dockerfile
+    ports:
+      - 5005:8080
+    depends_on:
+      - localstack
+      - postgres
+      - rabbitmq
       
   localstack:
     image: localstack/localstack
@@ -32,3 +47,12 @@
       - POSTGRES_PASSWORD=eurostocks
       - POSTGRES_USER=eurostocks
       - POSTGRES_DB=eurostocks
+  
+  rabbitmq:
+    image: rabbitmq:3-management
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: eurostocks
+      RABBITMQ_DEFAULT_PASS: eurostocks

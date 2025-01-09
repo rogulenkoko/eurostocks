@@ -2,7 +2,7 @@ namespace EuroStock.Domain.Services.Abstract;
 
 public interface IStorageService
 {
-    Task<Guid> UploadFileAsync(string userId, Stream fileStream, CancellationToken cancellationToken = default);
+    Task UploadFileAsync(Guid merchantId, Guid id, Stream fileStream, CancellationToken cancellationToken = default);
 
-    Task<Stream> GetFileAsync(string userId, Guid id, CancellationToken cancellationToken = default);
+    Task<Stream> GetFileAsync(Guid merchantId, Guid id, CancellationToken cancellationToken = default);
 }

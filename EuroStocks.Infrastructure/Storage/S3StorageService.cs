@@ -3,18 +3,17 @@ using Amazon.S3.Model;
 using EuroStock.Domain.Services.Abstract;
 using Polly;
 
-namespace EuroStock.Domain.Services;
+namespace EuroStocks.Infrastructure.Storage;
 
 public class S3StorageService(IAmazonS3 s3Client) : IStorageService
 {
     private const string BucketName = "default";
     
-    public async Task<Guid> UploadFileAsync(string userId, Stream fileStream, CancellationToken cancellationToken = default)
+    public async Task UploadFileAsync(Guid merchantId, Guid id, Stream fileStream, CancellationToken cancellationToken = default)
     {
         await CreateBucketIfNotExistsAsync();
         
-        var id = Guid.NewGuid();
-        var key = GetPath(userId, id);
+        var key = GetPath(merchantId.ToString(), id);
         var putRequest = new PutObjectRequest
         {
             BucketName = BucketName,
@@ -25,12 +24,11 @@ public class S3StorageService(IAmazonS3 s3Client) : IStorageService
         
         var policy = Policy.Handle<Exception>().WaitAndRetryAsync(3, i => TimeSpan.FromMilliseconds(300));
         await policy.ExecuteAsync(() => s3Client.PutObjectAsync(putRequest, cancellationToken));
-        return id;
     }
 
-    public async Task<Stream> GetFileAsync(string userId, Guid id, CancellationToken cancellationToken = default)
+    public async Task<Stream> GetFileAsync(Guid merchantId, Guid id, CancellationToken cancellationToken = default)
     {
-        var key = GetPath(userId, id);
+        var key = GetPath(merchantId.ToString(), id);
         var getRequest = new GetObjectRequest
         {
             BucketName = BucketName,

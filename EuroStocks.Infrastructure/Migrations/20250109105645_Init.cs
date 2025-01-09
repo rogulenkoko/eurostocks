@@ -16,7 +16,10 @@ namespace EuroStocks.Infrastructure.Migrations
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
+                    merchant_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_by = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -31,10 +34,12 @@ namespace EuroStocks.Infrastructure.Migrations
                     product_id = table.Column<Guid>(type: "uuid", nullable: false),
                     file_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
                     ext = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    data = table.Column<byte[]>(type: "bytea", nullable: false),
-                    sequence = table.Column<int>(type: "integer", nullable: true),
+                    source_url = table.Column<string>(type: "text", nullable: false),
+                    sequence_number = table.Column<int>(type: "integer", nullable: true),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
-                    user_id = table.Column<Guid>(type: "uuid", nullable: false)
+                    merchant_id = table.Column<Guid>(type: "uuid", nullable: false),
+                    created_at = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    created_by = table.Column<Guid>(type: "uuid", nullable: false)
                 },
                 constraints: table =>
                 {
