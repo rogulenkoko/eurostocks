@@ -1,4 +1,4 @@
-using EuroStock.Domain.Services.Abstract;
+using EuroStock.Domain.Configurations;
 using EuroStocks.Consumers;
 using EuroStocks.Infrastructure;
 using EuroStocks.Infrastructure.Messaging;
@@ -19,6 +19,10 @@ builder.AddMessaging();
 builder.AddMessagingSubscribers("consumers", typeof(UploadImageConsumer).Assembly);
 builder.AddStorage();
 builder.Services.AddHttpClient();
+
+var redisSection = builder.Configuration.GetSection("Redis");
+var redisConfiguration = redisSection.Get<RedisConfiguration>();
+builder.Services.AddSignalR().AddStackExchangeRedis(redisConfiguration.ConnectionString);
 
 var app = builder.Build();
 

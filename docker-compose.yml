@@ -9,6 +9,7 @@
       - localstack
       - postgres
       - rabbitmq
+      - redis
   
   eurostocks-consumers:
     build:
@@ -20,6 +21,7 @@
       - localstack
       - postgres
       - rabbitmq
+      - redis
       
   localstack:
     image: localstack/localstack
@@ -56,3 +58,8 @@
     environment:
       RABBITMQ_DEFAULT_USER: eurostocks
       RABBITMQ_DEFAULT_PASS: eurostocks
+      
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
