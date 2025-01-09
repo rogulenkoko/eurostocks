@@ -39,7 +39,6 @@ jobs:
           push: true
           target: final
           tags: ${{ secrets.DOCKER_USERNAME }}/eurostocks-api:latest
-          platforms: linux/amd64,linux/arm64
 
       -
         name: Build Consumers
@@ -58,4 +57,3 @@ jobs:
           push: true
           target: final
           tags: ${{ secrets.DOCKER_USERNAME }}/eurostocks-consumers:latest
-          platforms: linux/amd64,linux/arm64
