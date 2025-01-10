@@ -22,9 +22,6 @@ jobs:
       -
         name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      - 
-        name: Set up QEMU for multi-architecture builds
-        uses: docker/setup-qemu-action@v2
       -
         name: Build API
         uses: docker/build-push-action@v5
@@ -42,7 +39,6 @@ jobs:
           push: true
           target: final
           tags: ${{ secrets.DOCKER_USERNAME }}/eurostocks-api:latest
-          platforms: linux/amd64,linux/arm64
 
       -
         name: Build Consumers
@@ -61,4 +57,3 @@ jobs:
           push: true
           target: final
           tags: ${{ secrets.DOCKER_USERNAME }}/eurostocks-consumers:latest
-          platforms: linux/amd64,linux/arm64
