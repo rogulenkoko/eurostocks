@@ -12,7 +12,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace EuroStocks.Infrastructure.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20250109105645_Init")]
+    [Migration("20250110155707_Init")]
     partial class Init
     {
         /// <inheritdoc />
@@ -71,13 +71,11 @@ namespace EuroStocks.Infrastructure.Migrations
                         .HasColumnName("created_by");
 
                     b.Property<string>("Extension")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("ext");
 
                     b.Property<string>("FileName")
-                        .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("character varying(255)")
                         .HasColumnName("file_name");
@@ -99,7 +97,6 @@ namespace EuroStocks.Infrastructure.Migrations
                         .HasColumnName("sequence_number");
 
                     b.Property<string>("SourceUrl")
-                        .IsRequired()
                         .HasColumnType("text")
                         .HasColumnName("source_url");
 

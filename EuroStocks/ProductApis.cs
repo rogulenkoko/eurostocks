@@ -22,10 +22,17 @@ public static class ProductApis
             [FromBody]UpdateProductRequest request,
             [FromServices]IProductService productService) =>
         {
-            request.MerchantId = DefaultMerchant;
-            request.UserId = DefaultUser;
-            var productId = await productService.CreateOrUpdateProduct(request);
-            return Results.Ok(productId);
+            try
+            {
+                request.MerchantId = DefaultMerchant;
+                request.UserId = DefaultUser;
+                var productId = await productService.CreateOrUpdateProduct(request);
+                return Results.Ok(productId);
+            }
+            catch (Exception e)
+            {
+                return Results.BadRequest(e.Message);
+            }
         });
         
         routeBuilder.MapPost("{id}/image", async (
@@ -33,15 +40,22 @@ public static class ProductApis
             [FromBody]List<ProductImageModel> images,
             [FromServices]IProductService productService) =>
         {
-            var request = new UpdateProductImagesRequest
+            try
             {
-                MerchantId = DefaultMerchant,
-                UserId = DefaultUser,
-                ProductId = id,
-                Images = images,
-            };
-            await productService.UpdateImages(request);
-            return Results.Ok();
+                var request = new UpdateProductImagesRequest
+                {
+                    MerchantId = DefaultMerchant,
+                    UserId = DefaultUser,
+                    ProductId = id,
+                    Images = images,
+                };
+                await productService.UpdateImages(request);
+                return Results.Ok();
+            }
+            catch (Exception e)
+            {
+                return Results.BadRequest(e.Message);
+            }
         });
         
         routeBuilder.MapGet("{id}", async (
@@ -53,12 +67,19 @@ public static class ProductApis
         });
         
         routeBuilder.MapGet("image/{id}", async (
+            Guid id,
             HttpContext context,
-            [FromServices]IStorageService storageService,
-            [FromQuery]Guid id) =>
+            [FromServices]IStorageService storageService) =>
         {
-            var file = await storageService.GetFileAsync(DefaultMerchant, id, context.RequestAborted);
-            return Results.File(file, "image/jpeg");
+            try
+            {
+                var file = await storageService.GetFileAsync(DefaultMerchant, id, context.RequestAborted);
+                return Results.File(file, "image/jpeg");
+            }
+            catch (Exception e)
+            {
+                return Results.BadRequest(e.Message); 
+            }
         });
     }
 }

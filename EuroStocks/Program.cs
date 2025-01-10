@@ -26,6 +26,7 @@ builder.Services.AddCors(c =>
     c.AddPolicy("AllowOrigin", options => options.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod());
 });
 
+
 builder.AddMessaging();
 builder.AddStorage();
 
@@ -40,9 +41,9 @@ var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();
 
-app.MapHub<AppHub>("/hubs/app");
-
 app.UseCors(i => i.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+
+app.MapHub<AppHub>("/hubs/app");
 
 app.UseRouting();
 

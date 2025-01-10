@@ -6,9 +6,9 @@ EXPOSE 80
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY . .
-
+COPY ["EuroStocks/EuroStocks.csproj", "EuroStocks/"]
 RUN dotnet restore "EuroStocks/EuroStocks.csproj"
+COPY . .
 WORKDIR "/src/EuroStocks"
 RUN dotnet build "EuroStocks.csproj" -c $BUILD_CONFIGURATION -o /app/build
 

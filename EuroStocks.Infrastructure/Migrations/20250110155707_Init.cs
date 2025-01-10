@@ -32,9 +32,9 @@ namespace EuroStocks.Infrastructure.Migrations
                 {
                     id = table.Column<Guid>(type: "uuid", nullable: false),
                     product_id = table.Column<Guid>(type: "uuid", nullable: false),
-                    file_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    ext = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: false),
-                    source_url = table.Column<string>(type: "text", nullable: false),
+                    file_name = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    ext = table.Column<string>(type: "character varying(255)", maxLength: 255, nullable: true),
+                    source_url = table.Column<string>(type: "text", nullable: true),
                     sequence_number = table.Column<int>(type: "integer", nullable: true),
                     is_deleted = table.Column<bool>(type: "boolean", nullable: false),
                     merchant_id = table.Column<Guid>(type: "uuid", nullable: false),

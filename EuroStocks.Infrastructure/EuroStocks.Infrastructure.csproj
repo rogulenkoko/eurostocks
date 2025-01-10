@@ -23,4 +23,8 @@
       <ProjectReference Include="..\EuroStock.Domain\EuroStock.Domain.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Migrations\" />
+    </ItemGroup>
+
 </Project>

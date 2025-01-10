@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eurostocks-consumers
+  labels:
+    app: eurostocks-consumers
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: eurostocks-consumers
+  template:
+    metadata:
+      labels:
+        app: eurostocks-consumers
+    spec:
+      containers:
+        - name: eurostocks-consumers
+          image: rogulenkoko/eurostocks-consumers:latest
+          ports:
+            - containerPort: 8080
+          env:
+            - name: ASPNETCORE_ENVIRONMENT
+              value: "Production"
+            - name: ConnectionStrings__PostgresConnection
+              value: "Server=postgres;Port=5432;Database=eurostocks;Username=eurostocks;Password=eurostocks;Pooling=true;"
+            - name: S3__ServiceURL
+              value: "http://localstack:4566"
+            - name: S3__BucketName
+              value: "default"
+            - name: S3__Region
+              value: "eu-west-2"
+            - name: S3__AccessKey
+              value: "test"
+            - name: S3__SecretKey
+              value: "test"
+            - name: RabbitMq__HostName
+              value: "rabbitmq"
+            - name: RabbitMq__UserName
+              value: "eurostocks"
+            - name: RabbitMq__Password
+              value: "eurostocks"
+            - name: Redis__ConnectionString
+              value: "redis"
