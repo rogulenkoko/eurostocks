@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EuroStocks.Infrastructure.Entities;
+namespace EuroStock.Domain.Entities;
 
 [Table("product_image")]
 public class ProductImage : Entity
@@ -31,4 +31,7 @@ public class ProductImage : Entity
     
     [Column("is_deleted")]
     public bool IsDeleted { get; set; }
+
+    [Column("status")]
+    public ImageStatus Status { get; set; }
 }

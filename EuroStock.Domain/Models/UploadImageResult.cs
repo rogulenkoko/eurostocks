@@ -4,6 +4,8 @@ public class UploadImageResult
 {
     public Guid ImageId { get; set; }
     
+    public string ImageSource { get; set; }
+    
     public string? Error { get; set; }
 
     public bool IsSuccess => Error == null;

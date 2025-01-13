@@ -1,4 +1,4 @@
-using EuroStocks.Infrastructure.Entities;
+using EuroStock.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EuroStocks.Infrastructure;

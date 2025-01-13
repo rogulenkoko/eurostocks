@@ -1,7 +1,7 @@
+using EuroStock.Domain.Entities;
 using EuroStock.Domain.Exceptions;
 using EuroStock.Domain.Models;
 using EuroStock.Domain.Services.Abstract;
-using EuroStocks.Infrastructure.Entities;
 using Microsoft.EntityFrameworkCore;
 
 namespace EuroStocks.Infrastructure.Services;
@@ -60,7 +60,9 @@ public class ProductService(
         {
             Id = product.Id,
             Name = product.Name,
-            Images = product.ProductImages.Where(x => !x.IsDeleted).Select(x => x.Id).ToList(),
+            Images = product.ProductImages.Where(x => x is { IsDeleted: false, Status: ImageStatus.Saved })
+                .Select(x => x.Id)
+                .ToList(),
         };
     }
 
@@ -123,7 +125,9 @@ public class ProductService(
                 var uploadAction = async () =>
                 {
                     await using var stream = image.File.OpenReadStream();
-                    await storageService.UploadFileAsync(request.MerchantId, newImage.Id, stream);
+                    var result = await storageService.UploadFileAsync(request.MerchantId, newImage.Id, stream);
+                    var status = result ? ImageStatus.Saved : ImageStatus.Failed;
+                    await MarkImagesAsSaved(status, newImage.Id);
                 };
                 uploadTasks.Add(uploadAction.Invoke());
             }
@@ -142,5 +146,11 @@ public class ProductService(
         await dbContext.SaveChangesAsync();
         
         await Task.WhenAll(uploadTasks);
+    }
+
+    public Task MarkImagesAsSaved(ImageStatus status, params Guid[] imagesIds)
+    {
+        return dbContext.ProductImages.Where(x => imagesIds.Contains(x.Id) && x.Status == ImageStatus.Pending)
+            .ExecuteUpdateAsync(x => x.SetProperty(y => y.Status, status));
     }
 }

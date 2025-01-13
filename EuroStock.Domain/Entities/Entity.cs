@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EuroStocks.Infrastructure.Entities;
+namespace EuroStock.Domain.Entities;
 
 public abstract class Entity
 {

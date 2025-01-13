@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EuroStocks.Infrastructure.Entities;
+namespace EuroStock.Domain.Entities;
 
 [Table("product")]
 public class Product : Entity

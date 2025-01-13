@@ -9,21 +9,29 @@ public class S3StorageService(IAmazonS3 s3Client) : IStorageService
 {
     private const string BucketName = "default";
     
-    public async Task UploadFileAsync(Guid merchantId, Guid id, Stream fileStream, CancellationToken cancellationToken = default)
+    public async Task<bool> UploadFileAsync(Guid merchantId, Guid id, Stream fileStream, CancellationToken cancellationToken = default)
     {
-        await CreateBucketIfNotExistsAsync();
-        
-        var key = GetPath(merchantId.ToString(), id);
-        var putRequest = new PutObjectRequest
+        try
         {
-            BucketName = BucketName,
-            Key = key,
-            InputStream = fileStream,
-            ContentType = "image/jpeg"
-        };
+            await CreateBucketIfNotExistsAsync();
         
-        var policy = Policy.Handle<Exception>().WaitAndRetryAsync(3, i => TimeSpan.FromMilliseconds(300));
-        await policy.ExecuteAsync(() => s3Client.PutObjectAsync(putRequest, cancellationToken));
+            var key = GetPath(merchantId.ToString(), id);
+            var putRequest = new PutObjectRequest
+            {
+                BucketName = BucketName,
+                Key = key,
+                InputStream = fileStream,
+                ContentType = "image/jpeg"
+            };
+        
+            var policy = Policy.Handle<Exception>().WaitAndRetryAsync(3, i => TimeSpan.FromMilliseconds(300));
+            await policy.ExecuteAsync(() => s3Client.PutObjectAsync(putRequest, cancellationToken));
+            return true;
+        }
+        catch (Exception)
+        {
+            return false;
+        }
     }
 
     public async Task<Stream> GetFileAsync(Guid merchantId, Guid id, CancellationToken cancellationToken = default)
@@ -39,7 +47,7 @@ public class S3StorageService(IAmazonS3 s3Client) : IStorageService
         return response.ResponseStream;
     }
 
-    public async Task CreateBucketIfNotExistsAsync()
+    private async Task CreateBucketIfNotExistsAsync()
     {
         var buckets = await s3Client.ListBucketsAsync();
         if (buckets.Buckets.Exists(b => b.BucketName == BucketName)) return;
