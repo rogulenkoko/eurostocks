@@ -15,20 +15,20 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EuroStocks.Consumers", "Eur
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Manifests", "Manifests", "{5335F5D1-22E0-4744-8DCD-74439351904C}"
 	ProjectSection(SolutionItems) = preProject
-		api-deployment.yaml = api-deployment.yaml
-		api-service.yaml = api-service.yaml
-		redis-deployment.yaml = redis-deployment.yaml
-		redis-service.yaml = redis-service.yaml
-		postgres-deployment.yaml = postgres-deployment.yaml
-		postgres-pvc.yaml = postgres-pvc.yaml
-		postgres-service.yaml = postgres-service.yaml
-		localstack-deployment.yaml = localstack-deployment.yaml
-		localstack-service.yaml = localstack-service.yaml
-		localstack-pvc.yaml = localstack-pvc.yaml
-		rabbit-deployment.yaml = rabbit-deployment.yaml
-		rabbit-service.yaml = rabbit-service.yaml
-		consumers-deployment.yaml = consumers-deployment.yaml
-		consumers-service.yaml = consumers-service.yaml
+		manifests\api-deployment.yaml = manifests\api-deployment.yaml
+		manifests\api-service.yaml = manifests\api-service.yaml
+		manifests\consumers-deployment.yaml = manifests\consumers-deployment.yaml
+		manifests\consumers-service.yaml = manifests\consumers-service.yaml
+		manifests\localstack-deployment.yaml = manifests\localstack-deployment.yaml
+		manifests\localstack-pvc.yaml = manifests\localstack-pvc.yaml
+		manifests\localstack-service.yaml = manifests\localstack-service.yaml
+		manifests\postgres-deployment.yaml = manifests\postgres-deployment.yaml
+		manifests\postgres-pvc.yaml = manifests\postgres-pvc.yaml
+		manifests\postgres-service.yaml = manifests\postgres-service.yaml
+		manifests\rabbit-deployment.yaml = manifests\rabbit-deployment.yaml
+		manifests\rabbit-service.yaml = manifests\rabbit-service.yaml
+		manifests\redis-deployment.yaml = manifests\redis-deployment.yaml
+		manifests\redis-service.yaml = manifests\redis-service.yaml
 	EndProjectSection
 EndProject
 Global

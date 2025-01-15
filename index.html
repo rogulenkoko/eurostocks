@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EuroStocks Frontend</title>
+  <style>
+    body {
+      font-family: 'Arial', sans-serif;
+      background-color: #f4f4f9;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 40px auto;
+      background-color: #ffffff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      color: #333;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 2.5em;
+    }
+
+    .notification {
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    .notification.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .notification.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    #image-manager {
+      display: none;
+      margin-top: 30px;
+    }
+
+    #product-images img {
+      max-width: 200px;
+      margin: 10px;
+      border-radius: 5px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    label {
+      font-size: 1.1em;
+      margin-bottom: 8px;
+      display: block;
+      color: #555;
+    }
+
+    input[type="text"],
+    input[type="file"],
+    input[type="url"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 15px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1em;
+      box-sizing: border-box;
+    }
+
+    button {
+      background-color: #007bff;
+      color: white;
+      padding: 10px 20px;
+      font-size: 1em;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button:disabled {
+      background-color: #ccc;
+      cursor: not-allowed;
+    }
+
+    .upload-section {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .upload-section div {
+      margin-bottom: 15px;
+    }
+
+    .uploaded-images {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-start;
+      gap: 15px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>EuroStocks</h1>
+
+    <div>
+      <label for="product-name">Product Name:</label>
+      <input type="text" id="product-name" placeholder="Enter product name">
+      <button id="create-product">Create Product</button>
+    </div>
+
+    <div id="image-manager">
+      <h2>Manage Images</h2>
+      
+      <div class="upload-section">
+        <!-- <div>
+          <label for="image-file">Upload Images:</label>
+          <input type="file" id="image-file" multiple>
+        </div> -->
+        
+        <div>
+          <label for="image-url">Add Image by URL:</label>
+          <input type="text" id="image-url" placeholder="Enter image URL">
+          <button id="add-url-image">Add URL Image</button>
+        </div>
+        
+        <button id="upload-images">Save All Images</button>
+      </div>
+
+      <h3>Uploaded Images</h3>
+      <div id="product-images" class="uploaded-images"></div>
+    </div>
+
+    <div id="notifications"></div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@microsoft/signalr@5.0.5/dist/browser/signalr.min.js"></script>
+  
+  <script>
+    // const apiBaseUrl = 'http://127.0.0.1:65248';  // Update with your actual API base URL
+    const apiBaseUrl = 'http://localhost:5000';  // Update with your actual API base URL
+    let productId = null;
+    let imagesToUpload = [];
+
+    // Enable image manager UI
+    function enableImageManager() {
+      document.getElementById('image-manager').style.display = 'block';
+    }
+
+    // Create Product
+    document.getElementById('create-product').addEventListener('click', async () => {
+      const productName = document.getElementById('product-name').value;
+
+      if (!productName) {
+        alert('Please enter a product name.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/product`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name: productName })
+        });
+
+        if (response.ok) {
+          productId = await response.json(); // API returns the ID as a string
+          if (productId) {
+            enableImageManager();
+          } else {
+            alert('Failed to retrieve product ID.');
+          }
+        } else {
+          alert('Failed to create product.');
+        }
+      } catch (error) {
+        console.error('Error creating product:', error);
+      }
+    });
+
+    // Add image URL to the upload queue
+    document.getElementById('add-url-image').addEventListener('click', () => {
+      const imageUrl = document.getElementById('image-url').value;
+      if (!imageUrl) {
+        alert('Please enter an image URL.');
+        return;
+      }
+
+      imagesToUpload.push({
+        id: null,
+        sequenceNumber: imagesToUpload.length,
+        fileUrl: imageUrl,
+        file: null
+      });
+
+    });
+
+    // Save all images
+    document.getElementById('upload-images').addEventListener('click', async () => {
+      if (!productId) {
+        alert('Please create a product first.');
+        return;
+      }
+
+      if (imagesToUpload.length === 0) {
+        alert('No images to upload.');
+        return;
+      }
+
+      try {
+        const response = await fetch(`${apiBaseUrl}/product/${productId}/image`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(imagesToUpload.map((img, index) => ({
+            id: img.id,
+            sequenceNumber: index,
+            fileUrl: img.fileUrl,
+            file: img.file ? img.file.name : null // Replace with actual file handling for binary uploads
+          })))
+        });
+
+        if (response.ok) {
+          // After uploading, get the product with its images
+          fetchProductImages();
+          imagesToUpload = []; // Clear the queue
+        } else {
+          alert('Failed to upload images.');
+        }
+      } catch (error) {
+        console.error('Error uploading images:', error);
+      }
+    });
+
+    // Fetch product images by product ID
+    async function fetchProductImages() {
+      try {
+        const response = await fetch(`${apiBaseUrl}/product/${productId}`);
+        if (response.ok) {
+          const product = await response.json();
+          displayImages(product.images); // Assuming the product has an 'images' field
+        } else {
+          alert('Failed to retrieve product images.');
+        }
+      } catch (error) {
+        console.error('Error fetching product images:', error);
+      }
+    }
+
+    // Display images on the page
+    function displayImages(images) {
+      const productImagesDiv = document.getElementById('product-images');
+      productImagesDiv.innerHTML = ''; // Clear current images
+      images.forEach((image) => {
+        const imgElement = document.createElement('img');
+        imgElement.src = `${apiBaseUrl}/product/image/${image}`; // Use the ID to fetch the image
+        productImagesDiv.appendChild(imgElement);
+      });
+    }
+
+    // SignalR Setup
+    const connection = new signalR.HubConnectionBuilder()
+      .withUrl(`${apiBaseUrl}/hubs/app`, { withCredentials: false })  // SignalR hub URL
+      .configureLogging(signalR.LogLevel.Information)
+      .build();
+
+    // Handle incoming messages from the SignalR hub
+    connection.on("UploadImage", function (result) {
+      const notifications = document.getElementById('notifications');
+      const notification = document.createElement('div');
+      notification.className = 'notification';
+
+      if (result.isSuccess) {
+        notification.classList.add('success');
+        notification.textContent = `Image uploaded successfully: ${result.imageId}`;
+
+        // After successful image upload, reload images for this product
+        fetchProductImages();
+      } else {
+        notification.classList.add('error');
+        notification.textContent = `Failed to upload image: ${result.error}`;
+      }
+
+      notifications.appendChild(notification);
+    });
+
+    // Start the SignalR connection
+    connection.start({ withCredentials: false }).catch(function (err) {
+      return console.error(err.toString());
+    });
+
+  </script>
+</body>
+</html>
