@@ -23,15 +23,15 @@ services:
       RESHARPER_LOG_CONF: "/etc/opt/rider-debugger/backend-log.xml"
     image: "eurostocks:dev"
     ports:
-    - "127.0.0.1:57008:57100"
-    - "127.0.0.1:57208:57300"
+    - "127.0.0.1:57036:57100"
+    - "127.0.0.1:57236:57300"
     volumes:
     - "/Users/track-pod/.nuget/packages:/home/app/.nuget/packages"
     - "/Users/track-pod/Documents/ed/EuroStocks/EuroStocks:/app:rw"
     - "/Users/track-pod/Documents/ed/EuroStocks:/src:rw"
     - "/Users/track-pod/.local/share/JetBrains/RiderRemoteDebugger/2024.1.1/LinuxArm64:/opt/rider-debugger"
     - "/Applications/Rider.app/Contents/bin:/etc/opt/rider-debugger/backend-log.xml"
-    - "/Users/track-pod/Library/Logs/JetBrains/Rider2024.1/DebuggerWorker/JetBrains.Debugger.Worker.2025_1_15_14_46_27:/var/opt/rider-debugger:rw"
+    - "/Users/track-pod/Library/Logs/JetBrains/Rider2024.1/DebuggerWorker/JetBrains.Debugger.Worker.2025_2_19_14_36_51:/var/opt/rider-debugger:rw"
     working_dir: "/app"
   eurostocks-consumers:
     build:
@@ -56,13 +56,13 @@ services:
       RESHARPER_LOG_CONF: "/etc/opt/rider-debugger/backend-log.xml"
     image: "eurostocks.consumers:dev"
     ports:
-    - "127.0.0.1:57009:57100"
-    - "127.0.0.1:57209:57300"
+    - "127.0.0.1:57037:57100"
+    - "127.0.0.1:57237:57300"
     volumes:
     - "/Users/track-pod/.nuget/packages:/home/app/.nuget/packages"
     - "/Users/track-pod/Documents/ed/EuroStocks/EuroStocks.Consumers:/app:rw"
     - "/Users/track-pod/Documents/ed/EuroStocks:/src:rw"
     - "/Users/track-pod/.local/share/JetBrains/RiderRemoteDebugger/2024.1.1/LinuxArm64:/opt/rider-debugger"
     - "/Applications/Rider.app/Contents/bin:/etc/opt/rider-debugger/backend-log.xml"
-    - "/Users/track-pod/Library/Logs/JetBrains/Rider2024.1/DebuggerWorker/JetBrains.Debugger.Worker.2025_1_15_14_46_27:/var/opt/rider-debugger:rw"
+    - "/Users/track-pod/Library/Logs/JetBrains/Rider2024.1/DebuggerWorker/JetBrains.Debugger.Worker.2025_2_19_14_36_51:/var/opt/rider-debugger:rw"
     working_dir: "/app"
