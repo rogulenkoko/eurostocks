@@ -13,3 +13,4 @@
    docker compose up --build
 3. Once the application is up and running, you can access the API documentation at:
 http://localhost:5000/swagger/index.html
+4. The most amazing frontend can be found in the file index.html
